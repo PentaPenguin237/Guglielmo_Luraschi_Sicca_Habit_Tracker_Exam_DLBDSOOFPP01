@@ -21,7 +21,7 @@ The Habit Tracker Application is an innovative tool designed to assist users in 
 ### Setup
 
 1. **Clone the Repository**:  
-git clone https://github.com/yourusername/habit-tracker.git
+git clone https://github.com/PentaPenguin237/Guglielmo_Luraschi_Sicca_Habit_Tracker_Exam_DLBDSOOFPP01.git
 
 
 2. **Navigate to the Directory**:  
