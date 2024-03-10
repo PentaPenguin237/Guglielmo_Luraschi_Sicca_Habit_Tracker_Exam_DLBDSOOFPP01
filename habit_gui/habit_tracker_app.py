@@ -1,5 +1,5 @@
 import json
-from datetime import datetime
+from datetime import datetime, timedelta
 import tkinter as tk
 from tkinter import scrolledtext
 from habit_classes.habit_tracker import HabitTracker
@@ -134,15 +134,19 @@ class HabitTrackerApp():
 
     def update_habit(self):
         """
-        Update a habit's completion status with a custom date.
+        Update a habit's completion status with a custom date or today's date if no date is provided.
         """
         name = self.update_name_entry.get()
         custom_date = self.update_date_entry.get()
-        if custom_date:
-            message = self.tracker.update_habit_custom_date(name, custom_date)
-            self.output_text.insert(tk.END, f"{message}\n")
+        
+        if not custom_date:  # If no date is provided, use today's date
+            custom_date = datetime.today().strftime('%Y-%m-%d')
+            message = f"No date entered. Using today's date: {custom_date}. "
+            message += self.tracker.update_habit_custom_date(name, custom_date)
         else:
-            self.output_text.insert(tk.END, "Please enter a valid date (YYYY-MM-DD).\n")
+            message = self.tracker.update_habit_custom_date(name, custom_date)
+
+        self.output_text.insert(tk.END, f"{message}\n")
         self.update_name_entry.delete(0, tk.END)
         self.update_date_entry.delete(0, tk.END)
 
@@ -160,8 +164,8 @@ class HabitTrackerApp():
         """        
         name = self.display_name_entry.get()
         if name in self.tracker.habits:
-            streak, day_or_week = self.tracker.habits[name].verify_streak()
-            
+            streak = self.tracker.habits[name].verify_streak()
+            day_or_week = self.tracker.habits[name].day_or_week()
             self.output_text.insert(tk.END, f"{name} streak: {streak} - {day_or_week}\n")
         else:
             self.output_text.insert(tk.END, f"Habit not found: {name}\n")
@@ -171,8 +175,9 @@ class HabitTrackerApp():
         Returns the name of the habit for which we had the longest streak
         """           
         name, streak = self.tracker.longest_habit_streak()
+        day_or_week = self.tracker.habits[name].day_or_week()
         if name:
-            self.output_text.insert(tk.END, f"Longest Streak: {name} with {streak} days.\n")
+            self.output_text.insert(tk.END, f"Longest Streak: {name} with {streak} {day_or_week}.\n")
         else:
             self.output_text.insert(tk.END, "No streaks to display.\n")
  

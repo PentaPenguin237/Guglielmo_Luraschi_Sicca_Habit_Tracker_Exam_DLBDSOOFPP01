@@ -31,7 +31,6 @@ cd habit-tracker
 3. **Install Dependencies**:  
 pip install -r requirements.txt
 
-
 ## Usage
 
 ### Running the Application

@@ -30,20 +30,23 @@ class Habit:
         streak_counter = 0
         today = datetime.today().date()
         date_check = today
+        sorted_dates = sorted([datetime.strptime(d, '%Y-%m-%d').date() for d in self.completion_dates])        
         if self.habit_type == 'daily':
-            day_or_week = "days";
+
             # Iterate over each day backwards from today, checking if the habit was completed.
-            for date_str in reversed(self.completion_dates):
-                if str(date_check) == date_str:
+            print("Today:", today)  # Debugging: Print today's date
+            for date in reversed(sorted_dates):
+                print("Checking:", date, "against", date_check)  # Debugging: Print the comparison being made
+                if date == date_check:
                     streak_counter += 1
                     date_check -= timedelta(days=1)
                 else:
                     break
+            print("Streak counter:", streak_counter)  # Debugging: Print the final streak count
 
         elif self.habit_type == 'weekly':
             day_or_week = "weeks";
             # Sort the completion dates and iterate week by week.
-            sorted_dates = sorted([datetime.strptime(d, '%Y-%m-%d').date() for d in self.completion_dates])
             if sorted_dates:
                 current_week_start = today - timedelta(days=today.weekday())
                 for date in sorted_dates[::-1]:
@@ -54,4 +57,14 @@ class Habit:
                     elif week_start < current_week_start:
                         break
 
-        return streak_counter, day_or_week
+        return streak_counter
+
+    def day_or_week(self):
+    
+        if self.habit_type == 'daily':
+            day_or_week = "days";
+
+        elif self.habit_type == 'weekly':
+            day_or_week = "weeks";  
+            
+        return day_or_week

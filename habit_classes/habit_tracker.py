@@ -11,6 +11,30 @@ class HabitTracker:
         self.json_file_path = json_file_path
         self.habits = self.load_habits()
 
+    def fill_missing_dates(self):
+        """
+        Fills in missing completion dates for each 'daily' habit up to today's date.
+        """
+        today = datetime.today().date()
+        for habit in self.habits.values():
+            # Skip if there are no completion dates
+            if not habit.completion_dates:
+                continue
+
+            # Generate a set of all dates from the start date to today
+            start_date = max(datetime.strptime(d, '%Y-%m-%d').date() for d in habit.completion_dates)
+            all_dates = {start_date + timedelta(days=x) for x in range((today - start_date).days + 1)}
+            
+            # Convert completion_dates to a set of datetime.date objects for easier comparison
+            completion_date_objs = {datetime.strptime(d, '%Y-%m-%d').date() for d in habit.completion_dates}
+            
+            # Find missing dates and add them
+            missing_dates = all_dates - completion_date_objs
+            habit.completion_dates.extend([date.strftime('%Y-%m-%d') for date in missing_dates])
+
+            # Sort the dates after adding the missing ones
+            habit.completion_dates = sorted(habit.completion_dates, key=lambda d: datetime.strptime(d, '%Y-%m-%d'))
+
     def load_habits(self):
         """Load habits from the specified JSON file."""
         if os.path.isfile(self.json_file_path):
